@@ -67,7 +67,12 @@ uint16_t lcz_sensor_adv_match_1m(AdHandle_t *handle)
 				   sizeof(BTXXX_DM_1M_HEADER)) == 0) {
 				return BTXXX_DM_1M_PHY_AD_PROTOCOL_ID;
 			}
-		}
+		} else if ((handle->size >= 5 - 1)) {
+			if (memcmp(handle->pPayload, LYNKZ_AD_HEADER,
+				   sizeof(LYNKZ_AD_HEADER)) == 0) {
+				return LYNKZ_1M_PHY_AD_PROTOCOL_ID;
+			}
+		} 
 	}
 	return 0;
 }
@@ -83,6 +88,12 @@ uint16_t lcz_sensor_adv_match_rsp(AdHandle_t *handle)
 			if (memcmp(handle->pPayload, BT6XX_RSP_HEADER, sizeof(BT6XX_RSP_HEADER)) ==
 			    0) {
 				return BTXXX_1M_PHY_RSP_PROTOCOL_ID;
+			}
+		}
+		else if ((handle->size >= 5 - 1)) {
+			if (memcmp(handle->pPayload, LYNKZ_RSP_HEADER,
+				   sizeof(LYNKZ_RSP_HEADER)) == 0) {
+				return LYNKZ_1M_PHY_RSP_PROTOCOL_ID;
 			}
 		}
 	}

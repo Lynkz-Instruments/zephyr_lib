@@ -33,6 +33,9 @@ extern "C" {
 #define LAIRD_CONNECTIVITY_MANUFACTURER_SPECIFIC_COMPANY_ID1 0x0077
 #define LAIRD_CONNECTIVITY_MANUFACTURER_SPECIFIC_COMPANY_ID2 0x00E4
 
+#define LYNKZ_INSTRUMENT_MANUFACTURER_SPECIFIC_COMPANY_ID1 0x6666
+#define LYNKZ_INSTRUMENT_MANUFACTURER_SPECIFIC_COMPANY_ID2 0x6667
+
 /* clang-format off */
 #define RESERVED_AD_PROTOCOL_ID               0x0000
 #define BTXXX_1M_PHY_AD_PROTOCOL_ID           0x0001
@@ -46,6 +49,8 @@ extern "C" {
 #define BTXXX_DM_CODED_PHY_AD_PROTOCOL_ID     0x0009
 #define BTXXX_DM_ENC_CODED_PHY_AD_PROTOCOL_ID 0x000A
 #define BTXXX_DM_1M_PHY_RSP_PROTOCOL_ID       0x000B
+#define LYNKZ_1M_PHY_AD_PROTOCOL_ID 	      0x000C
+#define LYNKZ_1M_PHY_RSP_PROTOCOL_ID 	      0x000D
 #define CT_TRACKER_AD_PROTOCOL_ID             0xFF81
 #define CT_GATEWAY_AD_PROTOCOL_ID             0xFF82
 #define CT_DATA_DOWNLOAD_AD_PROTOCOL_ID       0xFF83
@@ -78,6 +83,26 @@ extern "C" {
 #define BTXXX_DEFAULT_NETWORK_ID  0x0000
 #define CT_DEFAULT_NETWORK_ID     0xFFFF
 /* clang-format on */
+
+/* Format of the Manufacturer Specific Data (MSD) using 1M PHY of TAG.
+ * Format of the 1st chunk of MSD when using coded PHY.
+ */
+struct LynkzSensorAdEvent {
+	uint16_t companyId;
+	uint16_t protocolId;
+	uint16_t productId;
+} __packed;
+
+struct LynkzSensorRspEvent {
+	uint16_t companyId;
+	uint16_t protocolId;
+	uint8_t packetIndex;
+	uint8_t event_type;
+	uint8_t data_size;
+	uint8_t data[20];
+	uint16_t crc;
+
+} __packed;
 
 /* Format of the Manufacturer Specific Data (MSD) using 1M PHY.
  * Format of the 1st chunk of MSD when using coded PHY.
@@ -183,6 +208,8 @@ typedef struct LczSensorAdCoded       LczSensorAdExt_t;
 typedef struct LczSensorDMUnencrAd    LczSensorDMUnencrAd_t;
 typedef struct LczSensorDMEncrAd      LczSensorDMEncrAd_t;
 typedef struct LczContactTracingAd    LczContactTracingAd_t;
+typedef struct LynkzSensorAdEvent	  LynkzSensorAdEvent_t;
+typedef struct LynkzSensorRspEvent	  LynkzSensorRspEvent_t;
 /* clang-format on */
 
 /*
@@ -226,6 +253,8 @@ BUILD_ASSERT(sizeof(LczSensorDMEncrAd_t) == LCZ_SENSOR_MSD_DM_ENCR_PAYLOAD_LENGT
 /* Bytes used to differentiate advertisement types/sensors. */
 #define LCZ_SENSOR_AD_HEADER_SIZE 4
 extern const uint8_t BTXXX_AD_HEADER[LCZ_SENSOR_AD_HEADER_SIZE];
+extern const uint8_t LYNKZ_AD_HEADER[LCZ_SENSOR_AD_HEADER_SIZE];
+extern const uint8_t LYNKZ_RSP_HEADER[LCZ_SENSOR_AD_HEADER_SIZE];
 extern const uint8_t BT5XX_RSP_HEADER[LCZ_SENSOR_AD_HEADER_SIZE];
 extern const uint8_t BT6XX_RSP_HEADER[LCZ_SENSOR_AD_HEADER_SIZE];
 extern const uint8_t BTXXX_CODED_HEADER[LCZ_SENSOR_AD_HEADER_SIZE];

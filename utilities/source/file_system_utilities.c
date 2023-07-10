@@ -96,6 +96,45 @@ int fsu_lfs_mount(void)
 	return rc;
 }
 
+int fsu_get_last_history_file(const char *path)
+{
+	uint16_t highest_num = 0;
+	if (path == NULL) {
+		LOG_ERR("Invalid path");
+		return;
+	}
+
+	struct fs_dir_t dir = { 0 };
+	fs_dir_t_init(&dir);
+	int rc = fs_opendir(&dir, path);
+	LOG_DBG("%s opendir: %d\n", path, rc);
+
+	while (rc >= 0) {
+		struct fs_dirent entry = { 0 };
+
+		rc = fs_readdir(&dir, &entry);
+		if (rc < 0) {
+			break;
+		}
+		if (entry.name[0] == 0) {
+			LOG_DBG("End of files\n");
+			break;
+		}
+		else if(strlen(entry.name) > strlen("history"))
+		{
+			LOG_DBG("name: %s", entry.name);
+			uint16_t num = atoi(entry.name + strlen("history"));
+			if(num>highest_num){
+				highest_num = num;
+			}
+		}
+
+	}
+
+	(void)fs_closedir(&dir);
+	return highest_num;
+}
+
 void fsu_list_directory(const char *path)
 {
 	if (path == NULL) {

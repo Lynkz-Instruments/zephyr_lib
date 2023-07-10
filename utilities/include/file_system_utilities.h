@@ -350,6 +350,8 @@ ssize_t fsu_get_file_size(const char *path, const char *name);
  */
 int fsu_simplify_path(const char *path_in, char *path_out);
 
+int fsu_get_last_history_file(const char *path);
+
 #ifdef __cplusplus
 }
 #endif
